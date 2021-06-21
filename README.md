@@ -301,7 +301,7 @@ Transfer/sec:      3.86MB
 
 - [things](https://github.com/e-k-m/things): A frontend using this service.
 
-- [thingstodo](https://github.com/e-k-m/thingstodo): A service that runs in conjuction with this service.
+- [thingstodo](https://github.com/e-k-m/thingsusers): A service that runs in conjuction with this service.
 
 - [wtoolzargs](https://github.com/e-k-m/wtoolzargs) and [wtoolzexceptions](https://github.com/e-k-m/wtoolzexceptions): Libraries used
   in this service.

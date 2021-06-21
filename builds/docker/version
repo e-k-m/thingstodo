@@ -1,0 +1,9 @@
+#!/bin/bash
+
+version=$(grep -Po '\d.\d.\d' ../../thingstodo/version.py)
+latest="0.0.0"
+if [ "$version" == "$latest" ]; then
+    echo "latest"
+else
+    echo $version
+fi   

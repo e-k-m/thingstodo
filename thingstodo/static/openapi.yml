@@ -1,0 +1,238 @@
+openapi: 3.0.0
+info:
+  title: TODO API
+  description: Service for managing TODOs
+  version: 0.0.0.dev
+servers:
+  - url: "https://todo.infra3d.ch/api/v0.0"
+    description: Production server
+  - url: "https://todo.devel.infra3d.ch/api/v0.0"
+    description: Development server
+paths:
+  /todos:
+    get:
+      summary: Get TODOs
+      parameters:
+        - $ref: "#/components/parameters/page"
+        - $ref: "#/components/parameters/limit"
+        - $ref: "#/components/parameters/count"
+        - $ref: "#/components/parameters/order"
+        - $ref: "#/components/parameters/filter"
+      responses:
+        '200':
+          description: TODOs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todos"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: Create TODO
+      requestBody:
+        description: TODO
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+      responses:
+        '201':
+          description: TODO
+          headers:
+            Location:
+              description: Location
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /todos/{id}:
+    get:
+      summary: Get TODO
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TODO ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: TODO
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      summary: Update TODO
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TODO ID
+          schema:
+            type: string
+      requestBody:
+        description: TODO
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Todo'
+      responses:
+        '201':
+          description: TODO
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: Delete TODO
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: TODO ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Null response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Todo"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  parameters:
+    # pagination
+    page:
+      name: page
+      in: query
+      description: "N-th Page of max N collection items."
+      required: false
+      schema:
+        type: integer
+        format: int32
+    limit:
+      name: limit
+      in: query
+      description: "Max N collection items to return."
+      required: false
+      schema:
+        type: integer
+        format: int32
+        maximum: 100
+    count:
+      name: count
+      in: query
+      description: "If total collection items count should be returned."
+      required: false
+      schema:
+        type: boolean
+    # sorting
+    order:
+      name: order
+      in: query
+      description: "Collection order with: property [asc | desc] {, property [asc | desc]}."
+      required: false
+      schema:
+        type: string
+    # filtering
+    filter:
+      name: filter
+      in: query
+      description: "Collection filter with: property operator value {, property [asc | desc]}."
+      required: false
+      schema:
+        type: string
+  schemas:
+    Todo:
+      type: object
+      required:
+        - text
+      properties:
+        id:
+          type: string
+          readOnly: true
+        text:
+          type: string
+        iscompleted:
+          type: boolean
+          default: false
+    Todos:
+      type: object
+      properties:
+        "@nextLink":
+          type: string
+          format: uri
+        count:
+          type: integer
+          format: int32        
+        value:
+          type: array
+          items:
+            $ref: "#/components/schemas/Todo"
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        target:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/Error"
+        innererror:
+          $ref: "#/components/schemas/InnerError"
+    InnerError:
+      type: object
+      additionalProperties: true
+      properties:
+        code:
+          type: string
+        innererror:
+          $ref: "#/components/schemas/InnerError"

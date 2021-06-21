@@ -1,0 +1,4 @@
+include README.md
+include requirements.txt
+include thingstodo/migrations/alembic.ini
+include thingstodo/migrations/script.py.mako

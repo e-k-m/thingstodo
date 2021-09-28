@@ -17,7 +17,7 @@ def install(session, *names):
 @nox.session
 def devel(session):
     session.install("-e", ".")
-    install(session, "coverage", "fmt", "lint")
+    install(session, "test", "coverage", "fmt", "lint")
 
 
 @nox.session(python=["3.6", "3.7", "3.8", "3.9"])
